@@ -2,6 +2,8 @@
 
 Repositório com materiais e códigos das aulas de Modelagem Preditiva e Machine Learning.
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/rodrigopimentel12/aula-predicao/blob/main/notebooks/Modelagem_Preditiva_FGV.ipynb)
+
 ## 👥 Grupo
 
 | Nome | Matrícula |
@@ -17,6 +19,7 @@ Repositório com materiais e códigos das aulas de Modelagem Preditiva e Machine
 ```
 ├── aulas/              # Apresentações e materiais de cada aula
 ├── dados/              # Datasets utilizados nas aulas
+├── notebooks/          # Notebooks Jupyter/Colab
 ├── scripts/            # Scripts Python auxiliares
 └── exercicios/         # Atividades e exercícios
 ```
@@ -60,6 +63,19 @@ pip install -r requirements.txt
 ```bash
 jupyter notebook
 ```
+
+## 🚀 Abrir no Google Colab
+
+Clique no botão abaixo para abrir o notebook diretamente no Google Colab:
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/rodrigopimentel12/aula-predicao/blob/main/notebooks/Modelagem_Preditiva_FGV.ipynb)
+
+O notebook inclui:
+- ✅ Carregamento automático dos dados
+- ✅ Análise exploratória completa
+- ✅ Feature Engineering aplicado
+- ✅ Modelos de Machine Learning
+- ✅ Visualizações e gráficos
 
 ## 🤖 Análise da IA
 
