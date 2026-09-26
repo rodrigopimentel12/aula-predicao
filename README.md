@@ -14,7 +14,7 @@ Repositório com materiais e códigos das aulas de Modelagem Preditiva e Machine
 ## Conteúdo
 
 ### 📚 Aulas
-- Modelagem Preditiva (apresentação)
+- **Modelagem Preditiva.pdf** - Apresentação sobre modelagem preditiva
 
 ### 📊 Dados
 - **Dados de Treinamento.xlsx** - Dataset para prática de modelagem preditiva
