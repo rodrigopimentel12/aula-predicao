@@ -1,6 +1,16 @@
-# Aula de Predição
+# Aula de Predição - FGV
 
 Repositório com materiais e códigos das aulas de Modelagem Preditiva e Machine Learning.
+
+## 👥 Grupo
+
+| Nome | Matrícula |
+|------|-----------|
+| João Victor Fortunato Teixeira Mundim | 813190/2026 |
+| Martinho Aloisio Lenz | 812869/2026 |
+| Nicolas Henrique Richardt da Silva | 813138/2026 |
+| Renato Vargas Monteiro | 812872/2026 |
+| Rodrigo Pimentel Carneiro | 812440/2026 |
 
 ## Estrutura do Projeto
 
@@ -51,10 +61,18 @@ pip install -r requirements.txt
 jupyter notebook
 ```
 
-## Autor
+## 🤖 Análise da IA
 
-Prof. Rodrigo Pimentel
+Veja o documento [ANALISE_IA.md](ANALISE_IA.md) com:
+- Análise completa do dataset
+- Ponderações sobre Feature Engineering
+- Código Python de apoio
+- Sugestões para os exercícios
+
+## 📖 Professor
+
+Prof. Roberto Pina Rizzo, MSC, PMP, PMI-ACP, SAFe 6 Agilist
 
 ## Licença
 
-Este projeto é para fins educacionais.
+Este projeto é para fins educacionais - FGV 2026.
