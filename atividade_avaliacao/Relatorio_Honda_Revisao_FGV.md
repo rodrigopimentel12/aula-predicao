@@ -150,20 +150,23 @@ Foram implementados os **4 modelos obrigatórios** para classificação:
 
 | Modelo | Acurácia | AUC-ROC | Precisão | Recall | F1-Score | CV (5-fold) |
 |--------|----------|---------|----------|--------|----------|-------------|
-| Gradient Boosting | 76,8% | **0,7423** | 54,2% | 38,5% | 45,0% | 76,1% ±1,2% |
-| Random Forest | **77,1%** | 0,7389 | **55,8%** | 35,2% | 43,2% | **76,4%** ±0,9% |
-| Regressão Logística | 75,9% | 0,7156 | 51,3% | **41,2%** | **45,7%** | 75,8% ±1,1% |
-| Árvore de Decisão | 74,2% | 0,6834 | 47,1% | 33,8% | 39,4% | 73,9% ±1,5% |
+| Random Forest | **76,84%** | **0,8075** | **61,42%** | 30,04% | 40,34% | 58,35% ±14,74% |
+| Regressão Logística | 76,74% | 0,8071 | 57,87% | **39,74%** | **47,12%** | 57,39% ±14,22% |
+| Gradient Boosting | 76,31% | 0,8066 | 57,58% | 34,80% | 43,38% | 59,43% ±14,08% |
+| Árvore de Decisão | 74,98% | 0,7546 | 53,96% | 27,47% | 36,41% | 60,41% ±12,16% |
 
 ### 5.2 Features Mais Importantes (Random Forest)
 
 | Ranking | Variável | Importância | Interpretação |
 |---------|----------|-------------|---------------|
-| 1° | VALOR_VENDIDO | 0,1856 | Valor da moto influencia retorno |
-| 2° | PRECO_TABELA | 0,1523 | Faixa de preço correlaciona com perfil |
-| 3° | PARCELA | 0,1187 | Clientes financiados têm outro perfil |
-| 4° | MOTO_MODELO | 0,0954 | Alguns modelos retornam mais |
-| 5° | ONDE_MOTO_VENDIDA | 0,0821 | Diferença por loja/região |
+| 1° | DESCONTO_INCONDICIONAL | 0,1156 | Desconto oferecido é forte preditor |
+| 2° | VALOR_VENDIDO | 0,1005 | Valor da moto influencia retorno |
+| 3° | PRECO_TABELA | 0,0933 | Faixa de preço correlaciona com perfil |
+| 4° | PERC_DESCONTO | 0,0915 | Percentual de desconto impacta decisão |
+| 5° | PARCELA | 0,0791 | Clientes financiados têm outro perfil |
+| 6° | MOTO_MODELO | 0,0744 | Alguns modelos retornam mais |
+| 7° | ONDE_MOTO_VENDIDA | 0,0733 | Diferença por loja/região |
+| 8° | TEM_KIT | 0,0717 | Clientes com acessórios mais engajados |
 
 ### 5.3 Insights de Negócio
 
@@ -178,9 +181,9 @@ Foram implementados os **4 modelos obrigatórios** para classificação:
 
 ### 6.1 Modelo Recomendado
 
-**Gradient Boosting** - maior capacidade discriminativa (AUC-ROC = 0,7423)
+**Random Forest** - maior capacidade discriminativa (AUC-ROC = 0,8075) e melhor precisão (61,42%)
 
-Alternativa: **Regressão Logística** - se priorizar Recall (identificar mais clientes em risco)
+Alternativa: **Regressão Logística** - se priorizar Recall (39,74%) para identificar mais clientes em risco
 
 ### 6.2 Roteiro de Execução em Produção
 
@@ -197,8 +200,9 @@ Alternativa: **Regressão Logística** - se priorizar Recall (identificar mais c
 
 ### 6.3 Desempenho Esperado
 
-- **Identificação geral:** ~77% de acerto
-- **Dos identificados como "vai retornar":** ~55% efetivamente retornam
+- **Identificação geral:** ~77% de acerto (acurácia do Random Forest)
+- **Dos identificados como "vai retornar":** ~61% efetivamente retornam (precisão)
+- **Capacidade discriminativa:** AUC-ROC de 0,81 indica boa separação entre classes
 - **Melhoria potencial:** Aumento de 5-10% na taxa de retorno com ações direcionadas
 
 ### 6.4 Limitações
