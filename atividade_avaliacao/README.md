@@ -6,7 +6,6 @@
 
 **Grupo:**
 - João Victor Fortunato Teixeira Mundim (813190/2026)
-- Martinho Aloisio Lenz (812869/2026)
 - Rodrigo Pimentel Carneiro (812440/2026)
 - Bruno Barradas
 

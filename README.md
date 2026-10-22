@@ -9,8 +9,6 @@ Repositório com materiais e códigos das aulas de Modelagem Preditiva e Machine
 | Nome | Matrícula |
 |------|-----------|
 | João Victor Fortunato Teixeira Mundim | 813190/2026 |
-| Martinho Aloisio Lenz | 812869/2026 |
-| Renato Vargas Monteiro | 812872/2026 |
 | Rodrigo Pimentel Carneiro | 812440/2026 |
 
 ## Estrutura do Projeto
