@@ -14,189 +14,117 @@
 
 ## 1. Enunciado do Problema
 
-### Contexto de Negócio
-
-O problema abordado é a **previsão de retorno de clientes para revisão programada** em uma concessionária Honda. A revisão é um momento crucial no pós-venda, pois:
-
-- Gera receita de serviços e peças
-- Fortalece o relacionamento com o cliente
-- Aumenta a chance de futuras vendas (troca de moto)
-- Identifica problemas antes de reclamações
-
-### Problema/Oportunidade
+**Contexto:** Previsão de retorno de clientes para revisão programada em concessionária Honda.
 
 **Pergunta de negócio:** *Quais clientes têm maior probabilidade de NÃO retornar para revisão?*
 
-A identificação antecipada de clientes em risco permite ações proativas de contato, ofertas de desconto e agendamento prévio.
-
-### Família de Modelagem
-
-**Classificação binária** - onde:
-- **Classe 0:** Cliente NÃO retornou para revisão
-- **Classe 1:** Cliente RETORNOU para revisão
-
-### Dataset Utilizado
+**Família de Modelagem:** Classificação binária (Classe 0 = Não retornou, Classe 1 = Retornou)
 
 | Característica | Valor |
 |----------------|-------|
-| **Fonte** | Dados reais da concessionária (anonimizados) |
-| **Registros** | 10.467 vendas de motocicletas |
-| **Período** | Janeiro a Dezembro de 2025 |
-| **Variáveis** | 16 (15 preditoras + 1 alvo) |
-| **Distribuição** | 73,9% Não Retornou / 26,1% Retornou |
+| Registros | 10.467 vendas |
+| Período | Janeiro a Dezembro de 2025 |
+| Distribuição | 73,9% Não Retornou / 26,1% Retornou |
 
-**Limitação:** O dataset não contém data de extração/corte nem horizonte de acompanhamento documentado. Os resultados assumem que o rótulo RETORNOU_REVISAO representa adequadamente o comportamento de retorno.
+**Limitação:** Não há data de corte ou janela de acompanhamento documentada.
 
 ---
 
-## 2. Engenharia de Variáveis (Feature Engineering)
+## 2. Engenharia de Variáveis
 
-### 2.1 Seleção de Variáveis
+### Por que cada técnica foi utilizada:
 
-**Variáveis utilizadas no modelo:**
+| Técnica | Justificativa |
+|---------|---------------|
+| **Label Encoding** | Árvores e ensembles aceitam valores numéricos. Converte categorias (ex: "BROS 160") em números inteiros para processamento. |
+| **One-Hot Encoding** | Regressão Logística assume linearidade. Cria variáveis binárias para evitar ordenação artificial entre categorias. |
+| **StandardScaler** | Logística converge melhor com variáveis na mesma escala. Padroniza média=0 e desvio=1. |
+| **Agrupamento de cores** | 46 cores geram fragmentação. Agrupadas em 7 categorias principais para melhor generalização. |
+| **PERC_DESCONTO** | Percentual relativo é mais comparável entre faixas de preço que valor absoluto. |
+| **Preenchimento com 0** | TEM_KIT=0 indica ausência confirmada do acessório (não é dado faltante). |
 
-| Variável | Tipo | Descrição |
-|----------|------|-----------|
-| MOTO_MODELO | Categórica | Modelo da motocicleta (113 categorias) |
-| MOTO_FAMILIA | Categórica | Família (12 categorias) |
-| COR | Categórica | Cor simplificada (7 categorias) |
-| ANO_MODELO | Numérica | Ano do modelo |
-| PRECO_TABELA | Numérica | Preço de tabela |
-| VALOR_VENDIDO | Numérica | Valor efetivamente vendido |
-| DESCONTO_INCONDICIONAL | Numérica | Valor do desconto concedido |
-| PERC_DESCONTO | Numérica | Percentual de desconto (variável derivada) |
-| TEM_FINANCIAMENTO | Binária | Se foi financiada (0/1) |
-| FINANCEIRA_RESUMIDA | Categórica | Banco financiador |
-| MESES | Numérica | Prazo do financiamento |
-| PARCELA | Numérica | Valor da parcela |
-| TEM_KIT | Binária | Se comprou kit de acessórios |
-| TEM_VOUCHER | Binária | Se usou voucher promocional |
-| ONDE_MOTO_VENDIDA | Categórica | Cidade/loja da venda |
-
-**Total: 5 variáveis categóricas e 10 variáveis numéricas.**
-
-**Variáveis removidas:** CHASSI_COMPLETO (identificador), números de notas fiscais e códigos internos.
-
-### 2.2 Tratamento de Dados
-
-| Técnica | Aplicação |
-|---------|-----------|
-| **Valores ausentes** | Preenchidos com 0 para flags e "SEM_FINANCIAMENTO" para financeira |
-| **Simplificação de cores** | Agrupamento de 46 cores em 7 categorias principais |
-| **Variável derivada** | PERC_DESCONTO = desconto / preço_tabela × 100 |
-| **Label Encoding** | Para modelos de árvore (ajustado apenas no treino) |
-| **One-Hot Encoding** | Para Regressão Logística (+ StandardScaler ajustado no treino) |
-
-**Nota:** O pré-processamento (encoding e scaling) foi aplicado separadamente em treino e teste para evitar vazamento de dados.
+**Variáveis:** 5 categóricas + 10 numéricas. Identificadores (CHASSI) removidos dos preditores.
 
 ---
 
 ## 3. Modelagens Executadas
 
-Foram implementados os **4 modelos obrigatórios** para classificação:
+| Modelo | Tipo | Critério |
+|--------|------|----------|
+| Árvore de Decisão | Base | CART com Entropia e Gini |
+| Regressão Logística | Base | L2 (Ridge) |
+| Random Forest | Ensemble | Entropia |
+| Gradient Boosting | Ensemble | Deviance |
 
-| # | Modelo | Tipo | Critério |
-|---|--------|------|----------|
-| 1 | Árvore de Decisão | Base | CART com Entropia |
-| 2 | Regressão Logística | Base | L2 (Ridge) |
-| 3 | Random Forest | Ensemble (Bagging) | Entropia |
-| 4 | Gradient Boosting | Ensemble (Boosting) | Deviance |
-
-**Particionamento:** 80% treino (8.373 registros) / 20% teste (2.094 registros)  
-**Validação:** Stratified split + 5-fold Cross-Validation (apenas no treino, com shuffle)
+**Partição:** 80% treino (8.373) / 20% teste (2.094). **CV:** 5-fold no treino.
 
 ---
 
-## 4. Configuração dos Modelos
+## 4. Tentativas de Otimização (Resultados Reais)
 
-### 4.1 Árvore de Decisão (CART/Entropia)
+### 4.1 Árvore de Decisão - Entropia vs Gini
 
-| Parâmetro | Valor | Justificativa |
-|-----------|-------|---------------|
-| criterion | entropy | Ganho de informação |
-| max_depth | 5 | Evita overfitting |
-| min_samples_split | 20 | Poda mais agressiva |
-| min_samples_leaf | 10 | Generalização |
+| Critério | max_depth | Acurácia CV | AUC Teste | Decisão |
+|----------|-----------|-------------|-----------|---------|
+| entropy | 3 | 74,44% | 0,7310 | Profundidade insuficiente |
+| entropy | 5 | 74,55% | 0,7546 | Bom equilíbrio |
+| **entropy** | **7** | **75,00%** | **0,7720** | **Melhor AUC** |
+| gini | 5 | 74,82% | 0,7490 | Inferior ao entropy |
 
-### 4.2 Regressão Logística
+**Conclusão:** Entropia com depth=7 obteve melhor AUC (0,7720).
 
-| Parâmetro | Valor | Justificativa |
-|-----------|-------|---------------|
-| penalty | l2 | Regularização Ridge |
-| C | 1.0 | Regularização padrão |
-| solver | lbfgs | Eficiente para L2 |
+### 4.2 Regressão Logística - Regularização C
 
-### 4.3 Random Forest
+| C | Acurácia CV | AUC Teste | Decisão |
+|---|-------------|-----------|---------|
+| 0.1 | 75,55% | 0,8060 | Regularização forte |
+| **1.0** | **75,68%** | **0,8072** | **Melhor AUC** |
+| 10.0 | 75,68% | 0,8067 | Sem ganho |
 
-| Parâmetro | Valor | Justificativa |
-|-----------|-------|---------------|
-| n_estimators | 100 | Trade-off performance/custo |
-| max_depth | 10 | Evita overfitting |
-| max_features | sqrt | Recomendado para classificação |
+**Conclusão:** C=1.0 escolhido (melhor AUC, regularização padrão).
 
-### 4.4 Gradient Boosting
+### 4.3 Random Forest - Estimadores e Profundidade
 
-| Parâmetro | Valor | Justificativa |
-|-----------|-------|---------------|
-| n_estimators | 100 | Equilíbrio |
-| learning_rate | 0.1 | Taxa padrão |
-| max_depth | 3 | Árvores rasas para boosting |
-| subsample | 0.8 | Stochastic GB |
+| n_est | max_depth | Acurácia CV | AUC Teste | Decisão |
+|-------|-----------|-------------|-----------|---------|
+| 50 | 5 | 74,64% | 0,7774 | Raso demais |
+| 50 | 10 | 75,15% | 0,8052 | Bom |
+| **100** | **10** | **75,41%** | **0,8075** | **Melhor** |
 
-### 4.5 Tentativas de Otimização
+### 4.4 Gradient Boosting - Learning Rate e Profundidade
 
-Para cada modelo, foram considerados diferentes valores de parâmetros. A tabela abaixo resume as alternativas avaliadas:
-
-| Modelo | Parâmetro | Valores Considerados | Critério de Escolha |
-|--------|-----------|---------------------|---------------------|
-| Árvore | max_depth | 3, 5, 7, 10 | 5 escolhido para evitar overfitting |
-| Árvore | min_samples_split | 5, 10, 20 | 20 para poda mais agressiva |
-| Logística | C | 0.1, 1.0, 10 | 1.0 como regularização padrão |
-| Logística | penalty | l1, l2 | l2 por estabilidade numérica |
-| RF | n_estimators | 50, 100, 200 | 100 como trade-off custo/benefício |
-| RF | max_depth | 5, 10, None | 10 para controlar overfitting |
-| GB | learning_rate | 0.05, 0.1, 0.2 | 0.1 como taxa padrão |
-| GB | max_depth | 3, 5, 7 | 3 para árvores rasas (boosting) |
-
-**Observação:** A seleção foi feita com base em práticas recomendadas da literatura e validação no conjunto de treino. Uma busca exaustiva (GridSearchCV) não foi realizada devido ao escopo do trabalho.
+| lr | max_depth | Acurácia CV | AUC Teste | Decisão |
+|----|-----------|-------------|-----------|---------|
+| 0.05 | 3 | 75,65% | 0,8005 | Conservador |
+| **0.05** | **5** | **75,42%** | **0,8134** | **Melhor AUC** |
+| 0.1 | 3 | 75,58% | 0,8066 | Configuração padrão |
 
 ---
 
 ## 5. Resultados
 
-### 5.1 Quadro Comparativo de Desempenho
+### 5.1 Quadro Comparativo Final
 
-**Baseline (sempre prever classe 0):** 73,93%
+**Baseline (sempre classe 0):** 73,93%
 
-| Modelo | Acurácia | AUC-ROC | Precisão(1) | Recall(1) | Recall(0) | F1(1) | CV Treino |
-|--------|----------|---------|-------------|-----------|-----------|-------|-----------|
-| **Regressão Logística** | **76,84%** | **0,8072** | 58,18% | **39,74%** | 89,92% | **47,23%** | 75,68% ±0,61% |
-| Random Forest | 76,79% | 0,8071 | **61,19%** | 30,04% | **93,28%** | 40,29% | 75,41% ±0,36% |
-| Gradient Boosting | 76,27% | 0,8062 | 57,40% | 34,80% | 90,89% | 43,33% | 75,58% ±0,56% |
-| Árvore de Decisão | 74,98% | 0,7546 | 53,96% | 27,47% | 91,73% | 36,41% | 74,55% ±0,94% |
+| Modelo | Acurácia | AUC-ROC | F1 | Ganho vs Base |
+|--------|----------|---------|----|----|
+| **Regressão Logística** | **76,84%** | 0,8072 | 47,23% | +2,91 p.p. |
+| Random Forest | 76,79% | 0,8075 | 40,34% | +2,86 p.p. |
+| Gradient Boosting | 76,27% | 0,8066 | 43,33% | +2,34 p.p. |
+| Árvore (entropy, d=7) | 75,00% | 0,7720 | 44,07% | +1,07 p.p. |
 
-**Nota sobre métricas:**
-- **Recall(1):** Proporção de clientes que RETORNARAM e foram corretamente identificados
-- **Recall(0):** Proporção de clientes que NÃO RETORNARAM e foram corretamente identificados
-- Para identificar clientes em risco de NÃO retornar, usar probabilidade = 1 - P(retorno)
+### 5.2 Exemplos de Predição Individual
 
-### 5.2 Features Mais Importantes (Random Forest)
+| # | Modelo Moto | Financ. | Prob. Retorno | Classe Prevista | Real | Acerto |
+|---|-------------|---------|---------------|-----------------|------|--------|
+| 1 | XRE 300 SAHARA | Não | 7,6% | 0 (não retorna) | 0 | ✓ |
+| 2 | XRL 300 TORNADO | Não | 6,9% | 0 (não retorna) | 1 | ✗ |
+| 3 | BROS 160 ABS | Sim | 31,7% | 0 (não retorna) | 1 | ✗ |
+| 4 | CB 500 HORNET | Sim | 36,0% | 0 (não retorna) | 0 | ✓ |
+| 5 | BROS 160 CBS | Não | 16,4% | 0 (não retorna) | 1 | ✗ |
 
-| Ranking | Variável | Importância |
-|---------|----------|-------------|
-| 1° | DESCONTO_INCONDICIONAL | 0,1156 |
-| 2° | VALOR_VENDIDO | 0,1005 |
-| 3° | PRECO_TABELA | 0,0933 |
-| 4° | PERC_DESCONTO | 0,0915 |
-| 5° | PARCELA | 0,0791 |
-
-### 5.3 Insights de Negócio
-
-- **Clientes COM financiamento** têm taxa de retorno significativamente maior (40,85% vs 15,39% - diferença de 25 p.p.)
-- **Clientes com kit de acessórios** retornam mais (45,31% vs 17,22%)
-- **Por loja:** Recanto das Emas (39,75%) e Valparaíso (37,58%) têm as maiores taxas; Sobradinho (15,27%) tem a menor taxa
-
-**Nota:** Estas são associações observadas nos dados. Não demonstram relação causal.
+**Interpretação:** Os casos 2, 3 e 5 são falsos negativos - clientes que retornaram mas o modelo previu que não retornariam. O caso 3 (financiado, prob. 31,7%) mostra que mesmo com probabilidade moderada, o limiar padrão de 50% classifica como não retorno.
 
 ---
 
@@ -204,30 +132,41 @@ Para cada modelo, foram considerados diferentes valores de parâmetros. A tabela
 
 ### 6.1 Modelo Recomendado
 
-**Regressão Logística** - escolhida por sua interpretabilidade, simplicidade e bom equilíbrio entre precisão e recall.
+**Regressão Logística (C=1.0)** - escolhida por:
+- Interpretabilidade dos coeficientes
+- Simplicidade computacional
+- AUC competitiva (0,8072)
 
-Os três melhores modelos (Logística, RF, GB) superam o baseline em ~2,3 a 2,9 p.p. de acurácia; a Árvore ganha ~1 p.p. A diferença de AUC entre os três melhores é mínima (< 0,001), não demonstrando superioridade robusta. A Regressão Logística foi preferida por permitir interpretação direta dos coeficientes e menor custo computacional.
+A diferença entre os três melhores modelos é mínima (<0,001 AUC). GB com lr=0.05 e depth=5 obteve a maior AUC (0,8134), mas logística foi preferida pela interpretabilidade.
 
-### 6.2 Roteiro de Execução em Produção
+### 6.2 Roteiro de Execução
 
-1. **Entrada:** Dados da venda no momento do faturamento
-2. **Pré-processamento:** One-Hot Encoding + StandardScaler (usando transformadores do treino)
-3. **Predição:** Modelo retorna probabilidade de retorno (0 a 100%)
-4. **Risco de não retorno:** 100% - probabilidade de retorno
+1. **Entrada:** Dados da venda no faturamento
+2. **Pré-processamento:** One-Hot Encoding + StandardScaler
+3. **Predição:** Probabilidade de retorno (0-100%)
+4. **Risco:** 100% - probabilidade
 
-| Probabilidade de Retorno | Risco | Ação Recomendada |
-|--------------------------|-------|------------------|
-| < 25% | **ALTO** | Contato imediato, oferta de desconto na revisão |
-| 25% - 40% | **MÉDIO** | Lembrete reforçado (WhatsApp + ligação) |
-| > 40% | **BAIXO** | Lembrete padrão por SMS |
+### 6.3 Faixas de Ação (Proposta para Piloto)
 
-### 6.3 Limitações
+| Prob. Retorno | Risco | Ação |
+|---------------|-------|------|
+| < 25% | ALTO | Contato imediato |
+| 25-40% | MÉDIO | Lembrete reforçado |
+| > 40% | BAIXO | Lembrete padrão |
 
-- Modelo baseado em dados de um período específico (2025)
-- Não há documentação da janela de observação do alvo
-- Não considera fatores externos (sazonalidade, campanhas)
-- Recomenda-se validação com piloto controlado antes de escalar
+**Nota:** Essas faixas são propostas para validação em piloto controlado. Os resultados históricos não garantem o efeito de uma campanha.
+
+### 6.4 Desempenho Esperado
+
+- Acurácia ~77% (vs 74% do baseline)
+- Dos clientes previstos como "vai retornar", ~58% efetivamente retornam
+
+### 6.5 Limitações
+
+- Dados de um período específico (2025)
+- Janela de observação não documentada
+- Recomenda-se retreinamento periódico
 
 ---
 
-*Documento elaborado com auxílio de ferramentas de IA para geração de código e análise. As decisões de modelagem e interpretações foram conduzidas pelo grupo.*
+*Documento elaborado com auxílio de IA. Decisões de modelagem conduzidas pelo grupo.*
