@@ -1,91 +1,101 @@
-# Enunciado da Atividade de Avaliação
+# Enunciado Oficial da Atividade de Avaliação
 ## Modelagem Preditiva - FGV
 
-**Data de Entrega:** 22/10/2026
+**Vencimento:** 22 de outubro de 2026 às 23:59
 
 ---
 
 ## Objetivo
 
-Desenvolver um projeto completo de modelagem preditiva aplicado a um problema de negócio real, utilizando técnicas de classificação aprendidas na disciplina.
+Esta atividade vai permitir que você realmente trabalhe como um Cientista de Dados, ainda que em um contexto mais simples, exigindo preparação dos dados através de Engenharia de Variáveis (Feature Engineering), exploração de diversas modelagens (para comparações e refinamentos de seus desempenhos) e formulação final de um mecanismo de predição para algum problema ou oportunidade de negócio.
 
 ---
 
-## Requisitos da Entrega
+## Passo 1 - Identificar o Tema
 
-### 1. Relatório (máximo 6 páginas)
+Identifique, no contexto profissional onde você atua, um tema de negócio que possa se beneficiar de alguma análise preditiva.
 
-O relatório deve conter:
-
-1. **Enunciado do problema**
-   - Contexto de negócio
-   - Família de modelagem (classificação/regressão)
-   - Descrição do dataset utilizado
-
-2. **Engenharia de Variáveis (Feature Engineering)**
-   - Seleção de variáveis
-   - Tratamento de valores ausentes
-   - Transformações aplicadas (encoding, scaling, etc.)
-
-3. **Modelagens executadas**
-   - Implementar **4 modelos obrigatórios**:
-     - Árvore de Decisão (com critério de Entropia)
-     - Regressão Logística
-     - Random Forest
-     - Gradient Boosting
-
-4. **Tentativas de otimização**
-   - Documentar parâmetros testados
-   - Justificar escolhas realizadas
-
-5. **Quadro comparativo de desempenho**
-   - Métricas: Acurácia, AUC-ROC, Precisão, Recall, F1-Score
-   - Validação Cruzada
-
-6. **Resumo final**
-   - Modelo recomendado
-   - Roteiro de execução em produção
+**Exemplos:**
+- Previsão de inadimplência de clientes (classificação)
+- Previsão de vendas mensais (regressão)
+- Previsão de rotatividade de funcionários (classificação)
+- Previsão de tempo de atendimento (regressão)
 
 ---
 
-### 2. Código
+## Passo 2 - Desenvolvimento
 
-- Notebook Jupyter (.ipynb) ou script Python (.py)
-- Código executável e reproduzível
-- Comentários explicativos
+Para o tema escolhido:
 
----
+1. **Enuncie claramente** o problema / oportunidade que se deseja tratar com dados.
 
-### 3. Dados
+2. **Identifique as fontes de dados** cabíveis para a análise.
 
-- Dataset utilizado no projeto
-- Dados devem estar anonimizados (sem informações pessoais identificáveis)
+3. **Determine a família de modelagem** analítica que será usada (classificação, regressão).
 
----
+4. **Obtenha um conjunto de dados** para o treinamento (reais ou fictícios).
 
-## Formato de Entrega
+5. **Aplique técnicas de Engenharia de Variáveis** (Feature Engineering) sobre os dados.
 
-- Repositório GitHub organizado
-- Arquivos em formato Word (.docx) ou PDF
+6. **Prepare os modelos** que você vai executar (em Jupyter Notebooks ou outra ferramenta). Este conjunto de modelos deve **obrigatoriamente** conter, no mínimo:
 
----
+   - **Se classificação:** uma árvore por entropia clássica (ID3) ou Gini + Regressão Logística + Random Forest + Gradient Boosting para classificação.
+   
+   - **Se regressão:** regressão linear ou polinomial + Gradient Boosting para regressão.
 
-## Critérios de Avaliação
+7. **Execute as diferentes modelagens**, sempre lançando mão de dados de retenção (holdout data), explorando os diferentes parâmetros de cada modelo e apurando indicadores de desempenho das diferentes versões que você executar (por exemplo: recall, precisão, acurácia, F1-score, posição em gráfico ROC). Não se esqueça de considerar o particular contexto de negócio em questão (que indicadores fazem mais sentido para ele).
 
-- Corretude metodológica (pipeline sem vazamento de dados)
-- Qualidade da análise e interpretação
-- Clareza do relatório
-- Organização do código
-- Fundamentação das decisões
+8. **Apresente um resumo final** de como as predições deverão ser realizadas em produção (o que e como executar, como apresentar os resultados, que desempenho esperar).
 
 ---
 
-## Observações Importantes
+## Passo 3 - Entregas
 
-1. O pré-processamento (encoding, scaling) deve ser aplicado **separadamente** em treino e teste para evitar vazamento de dados
-2. A validação cruzada deve ser realizada **apenas no conjunto de treino**
-3. As métricas devem ser interpretadas corretamente em relação às classes do problema
-4. Limitações do modelo devem ser documentadas
+### Documento Principal (obrigatório)
+
+Um texto em **MS Word ou PDF**, com **no máximo 06 (seis) páginas**, com os seguintes tópicos:
+
+1. Enunciado do problema / oportunidade.
+
+2. Explicação resumida de que técnicas de Engenharia de Variáveis (Feature Engineering) você utilizou para preparar os dados e por quê.
+
+3. Que modelagens você executou.
+
+4. Que tentativas você fez para melhorar o desempenho de cada uma das modelagens (resumidamente). Por exemplo, descreva as podas realizadas em árvores, as execuções de modelos ensemble com diferentes configurações de parâmetros para comparar os desempenhos etc.
+
+5. Os resultados (prints) das execuções das modelagens (tabelas / gráficos de resultados) para alguns exemplos a predizer a classe ou um valor.
+
+6. Um quadro de comparação de desempenho entre os modelos / versões de modelos utilizados.
+
+7. Um resumo final comparando os resultados obtidos em cada modelagem / versão de modelagem e que roteiro deve ser utilizado em produção para a execução da predição (o que executar, como mostrar o resultado).
+
+### Observação
+
+**Não é obrigatório** entregar a planilha de dados de treinamento nem os códigos-fonte utilizados.
+
+---
+
+## Passo 4 - Formato do Trabalho
+
+O trabalho pode ser feito **individualmente** ou em **grupos de até 5 pessoas**.
+
+---
+
+## Passo 5 - Identificação do Grupo
+
+No caso de trabalho em grupo, identifique no documento Word da entrega as pessoas elaboradoras (e pode subir as entregas na plataforma no nome de apenas um dos membros do grupo).
+
+---
+
+## Passo 6 - Recomendações e Orientações Finais
+
+- **Utilize a IA como uma ferramenta de auxílio**, onde cabível (para gerar e adaptar código, ajudar na interpretação), **não como a executora de todo o trabalho** apenas para você conferir e entregar. Procure explicar com as suas palavras as decisões de modelagem e os resultados obtidos.
+
+- **O objetivo aqui não é você conseguir uma modelagem de predição maravilhosa**, mas sim demonstrar que manejou os conceitos e as técnicas que conhece rumo ao melhor resultado possível.
+
+- Ou seja, **quem está em avaliação não são os modelos**, mas sim a capacidade de os(as) alunos(as) usarem de forma razoável os conceitos e técnicas vistas na disciplina.
+
+- **Seja simples!**
 
 ---
 
