@@ -26,7 +26,6 @@ Prever se clientes que compraram motocicletas Honda irão retornar para a **prim
 |------|-----------|
 | João Victor Fortunato Teixeira Mundim | 813190/2026 |
 | Martinho Aloisio Lenz | 812869/2026 |
-| Nicolas Henrique Richardt da Silva | 813138/2026 |
 | Renato Vargas Monteiro | 812872/2026 |
 | Rodrigo Pimentel Carneiro | 812440/2026 |
 
