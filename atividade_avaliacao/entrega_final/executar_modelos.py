@@ -27,7 +27,10 @@ from sklearn.metrics import (accuracy_score, precision_score, recall_score,
                              f1_score, roc_auc_score, confusion_matrix, roc_curve)
 
 
-def carregar_dados(caminho='../dados/Honda_Revisao_Modelagem.csv'):
+def carregar_dados(caminho=None):
+    if caminho is None:
+        from pathlib import Path
+        caminho = Path(__file__).resolve().parent / 'Honda_Revisao_Modelagem.csv'
     """Carrega e prepara os dados."""
     df = pd.read_csv(caminho)
     print(f"Dataset carregado: {df.shape[0]} registros, {df.shape[1]} variáveis")

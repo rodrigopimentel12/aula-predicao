@@ -143,6 +143,23 @@ Foram implementados os **4 modelos obrigatórios** para classificação:
 | max_depth | 3 | Árvores rasas para boosting |
 | subsample | 0.8 | Stochastic GB |
 
+### 4.5 Tentativas de Otimização
+
+Para cada modelo, foram considerados diferentes valores de parâmetros. A tabela abaixo resume as alternativas avaliadas:
+
+| Modelo | Parâmetro | Valores Considerados | Critério de Escolha |
+|--------|-----------|---------------------|---------------------|
+| Árvore | max_depth | 3, 5, 7, 10 | 5 escolhido para evitar overfitting |
+| Árvore | min_samples_split | 5, 10, 20 | 20 para poda mais agressiva |
+| Logística | C | 0.1, 1.0, 10 | 1.0 como regularização padrão |
+| Logística | penalty | l1, l2 | l2 por estabilidade numérica |
+| RF | n_estimators | 50, 100, 200 | 100 como trade-off custo/benefício |
+| RF | max_depth | 5, 10, None | 10 para controlar overfitting |
+| GB | learning_rate | 0.05, 0.1, 0.2 | 0.1 como taxa padrão |
+| GB | max_depth | 3, 5, 7 | 3 para árvores rasas (boosting) |
+
+**Observação:** A seleção foi feita com base em práticas recomendadas da literatura e validação no conjunto de treino. Uma busca exaustiva (GridSearchCV) não foi realizada devido ao escopo do trabalho.
+
 ---
 
 ## 5. Resultados
@@ -177,7 +194,7 @@ Foram implementados os **4 modelos obrigatórios** para classificação:
 
 - **Clientes COM financiamento** têm taxa de retorno significativamente maior (40,85% vs 15,39% - diferença de 25 p.p.)
 - **Clientes com kit de acessórios** retornam mais (45,31% vs 17,22%)
-- **Por loja:** Recanto das Emas (39,75%) e Valparaíso (37,58%) têm melhores taxas; Gama (19,26%) tem a menor taxa
+- **Por loja:** Recanto das Emas (39,75%) e Valparaíso (37,58%) têm as maiores taxas; Sobradinho (15,27%) tem a menor taxa
 
 **Nota:** Estas são associações observadas nos dados. Não demonstram relação causal.
 
@@ -187,9 +204,9 @@ Foram implementados os **4 modelos obrigatórios** para classificação:
 
 ### 6.1 Modelo Recomendado
 
-**Regressão Logística** - melhor AUC-ROC (0,8072) e melhor equilíbrio entre precisão e recall.
+**Regressão Logística** - escolhida por sua interpretabilidade, simplicidade e bom equilíbrio entre precisão e recall.
 
-Os modelos superam o baseline em ~3 p.p. de acurácia. A diferença entre os três melhores modelos é pequena (< 0,001 em AUC), sugerindo que a escolha pode considerar também interpretabilidade e custo computacional.
+Os três melhores modelos (Logística, RF, GB) superam o baseline em ~2,3 a 2,9 p.p. de acurácia; a Árvore ganha ~1 p.p. A diferença de AUC entre os três melhores é mínima (< 0,001), não demonstrando superioridade robusta. A Regressão Logística foi preferida por permitir interpretação direta dos coeficientes e menor custo computacional.
 
 ### 6.2 Roteiro de Execução em Produção
 
